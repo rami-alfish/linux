@@ -120,8 +120,16 @@ static void write_constraints_to_file(struct cfdata *data)
 			str_free(&s);
 		}
 	}
+
+	/* todo */
+	fprintf(fd, "\n# All Symbols\n");
+	for_all_symbols(sym) {
+		fprintf(fd, "#item %s\n", sym_get_name(sym));
+	}
+
 	fclose(fd);
 }
+
 
 static void add_comment(FILE *fd, struct fexpr *e)
 {
