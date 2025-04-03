@@ -19,6 +19,8 @@
 
 #define OUTFILE_CONSTRAINTS "./scripts/kconfig/cfout_constraints.txt"
 #define OUTFILE_DIMACS "./scripts/kconfig/cfout_constraints.dimacs"
+#define OUTFILE_DIMACS "./scripts/kconfig/cfout_constraints.features"
+
 
 static void write_constraints_to_file(struct cfdata *data);
 static void write_dimacs_to_file(PicoSAT *pico, struct cfdata *data);
@@ -94,7 +96,15 @@ int main(int argc, char *argv[])
 	end = clock();
 	time = ((double) (end - start)) / CLOCKS_PER_SEC;
 	printf("done. (%.6f secs.)\n", time);
+	
+	start = clock();
+	printf("Writing feature list...");
+	write_features_to_file();
+	end = clock();
+	time = ((double)(end - start)) / CLOCKS_PER_SEC;
+	printf("done. (%.6f secs.)\n", time);
 
+	printf("Features have been written into %s\n", OUTFILE_FEATURES);
 	printf("\nConstraints have been written into %s\n", OUTFILE_CONSTRAINTS);
 	printf("DIMACS-output has been written into %s\n", OUTFILE_DIMACS);
 
@@ -148,3 +158,25 @@ static void write_dimacs_to_file(PicoSAT *pico, struct cfdata *data)
 	picosat_print(pico, fd);
 	fclose(fd);
 }
+
+
+static void write_features_to_file()
+{
+	FILE *fd = fopen(OUTFILE_FEATURES, "w");
+	struct symbol *sym;
+
+	for_all_symbols(sym) {
+		if (!sym || !sym->name || sym->type == S_UNKNOWN)
+			continue;
+
+		if (sym->type == S_BOOLEAN || sym->type == S_TRISTATE) {
+			fprintf(fd, "CONFIG_%s\n", sym->name);
+			if (sym->type == S_TRISTATE) {
+				fprintf(fd, "CONFIG_%s_MODULE\n", sym->name);
+			}
+		}
+	}
+
+	fclose(fd);
+}
+
