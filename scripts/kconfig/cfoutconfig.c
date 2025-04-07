@@ -24,6 +24,7 @@
 
 static void write_constraints_to_file(struct cfdata *data);
 static void write_dimacs_to_file(PicoSAT *pico, struct cfdata *data);
+static void write_features_to_file(void);
 
 /* -------------------------------------- */
 
@@ -160,23 +161,23 @@ static void write_dimacs_to_file(PicoSAT *pico, struct cfdata *data)
 }
 
 
-static void write_features_to_file()
+static void write_features_to_file(void)
 {
-	FILE *fd = fopen(OUTFILE_FEATURES, "w");
-	struct symbol *sym;
+    FILE *fd = fopen(OUTFILE_FEATURES, "w");
+    struct symbol *sym;
 
-	for_all_symbols(sym) {
-		if (!sym || !sym->name || sym->type == S_UNKNOWN)
-			continue;
+    for_all_symbols(sym) {
+        if (!sym || !sym->name || sym->type == S_UNKNOWN)
+            continue;
 
-		if (sym->type == S_BOOLEAN || sym->type == S_TRISTATE) {
-			fprintf(fd, "CONFIG_%s\n", sym->name);
-			if (sym->type == S_TRISTATE) {
-				fprintf(fd, "CONFIG_%s_MODULE\n", sym->name);
-			}
-		}
-	}
+        if (sym->type == S_BOOLEAN || sym->type == S_TRISTATE) {
+            fprintf(fd, "CONFIG_%s\n", sym->name);
+            if (sym->type == S_TRISTATE) {
+                fprintf(fd, "CONFIG_%s_MODULE\n", sym->name);
+            }
+        }
+    }
 
-	fclose(fd);
+    fclose(fd);
 }
 
