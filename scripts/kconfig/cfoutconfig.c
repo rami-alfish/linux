@@ -19,7 +19,7 @@
 
 #define OUTFILE_CONSTRAINTS "./scripts/kconfig/cfout_constraints.txt"
 #define OUTFILE_DIMACS "./scripts/kconfig/cfout_constraints.dimacs"
-#define OUTFILE_DIMACS "./scripts/kconfig/cfout_constraints.features"
+#define OUTFILE_FEATURES "./scripts/kconfig/cfout_constraints.features"
 
 
 static void write_constraints_to_file(struct cfdata *data);
